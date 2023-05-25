@@ -1,10 +1,11 @@
 #include "shell.h"
 
 /**
- * is_shell_interactive - Checks if the shell is running in interactive mode.
+ * is_shell_interactive - Checks if shell is running in interactive mode.
  * @info: Pointer to info_t struct.
  *
- * Return: 1 if running in interactive mode, 0 otherwise.
+ * Return: 1 if running interactive mode, 0 otherwise.
+ * Partner project between Ben and Allan.
  */
 int is_shell_interactive(info_t *info)
 {
@@ -12,7 +13,7 @@ int is_shell_interactive(info_t *info)
 }
 
 /**
- * is_character_delimiter - Checks if a character is a delimiter.
+ * is_character_delimiter - Checks if character is delimiter.
  * @c: The character to check.
  * @delimiter: The delimiter character.
  *
@@ -24,7 +25,7 @@ int is_character_delimiter(char c, char delimiter)
 }
 
 /**
- * is_character_alphabetic - Checks if a character is alphabetic.
+ * is_character_alphabetic - Checks if a character is an alphabetic.
  * @c: The character to check.
  *
  * Return: 1 if the character is alphabetic, 0 otherwise.
