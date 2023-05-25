@@ -1,43 +1,37 @@
 #include "shell.h"
 
 /**
- * my_builtin_exit - exit the program with a status
+ * builtin_exit - exit of the program with the status
  * @data: struct for the program's data
- *
- * Return: zero if success, or other number if it's declared in the arguments
+ * Return: zero if sucess, or other number if its declared in the arguments
  */
-int my_builtin_exit(data_of_program *data)
+int builtin_exit(data_of_program *data)
 {
 	int i;
 
 	if (data->tokens[1] != NULL)
-	{
+	{/*if exists arg for exit, check if is a number*/
 		for (i = 0; data->tokens[1][i]; i++)
-		{
 			if ((data->tokens[1][i] < '0' || data->tokens[1][i] > '9')
-					&& data->tokens[1][i] != '+')
-			{
+				&& data->tokens[1][i] != '+')
+			{/*if is not a number*/
 				errno = 2;
 				return (2);
 			}
-		}
 		errno = _atoi(data->tokens[1]);
 	}
-
 	free_all_data(data);
 	exit(errno);
 }
 
 /**
- * my_builtin_cd - change the current directory
+ * builtin_cd - change the current directory
  * @data: struct for the program's data
- *
- * Return: zero if success, or other number if it's declared in the arguments
+ * Return: zero if sucess, or other number if its declared in the arguments
  */
-int my_builtin_cd(data_of_program *data)
+int builtin_cd(data_of_program *data)
 {
-	char *dir_home = env_get_key("HOME", data);
-	char *dir_old = NULL;
+	char *dir_home = env_get_key("HOME", data), *dir_old = NULL;
 	char old_dir[128] = {0};
 	int error_code = 0;
 
@@ -50,6 +44,7 @@ int my_builtin_cd(data_of_program *data)
 				error_code = set_work_directory(data, dir_old);
 			_print(env_get_key("PWD", data));
 			_print("\n");
+
 			return (error_code);
 		}
 		else
@@ -61,17 +56,17 @@ int my_builtin_cd(data_of_program *data)
 	{
 		if (!dir_home)
 			dir_home = getcwd(old_dir, 128);
+
 		return (set_work_directory(data, dir_home));
 	}
 	return (0);
 }
 
 /**
- * set_work_directory - set the working directory
+ * set_work_directory - set the work directory
  * @data: struct for the program's data
- * @new_dir: path to be set as the working directory
- *
- * Return: zero if success, or other number if it's declared in the arguments
+ * @new_dir: path to be set as work directory
+ * Return: zero if sucess, or other number if its declared in the arguments
  */
 int set_work_directory(data_of_program *data, char *new_dir)
 {
@@ -95,66 +90,65 @@ int set_work_directory(data_of_program *data, char *new_dir)
 }
 
 /**
- * my_builtin_help - display help messages
+ * builtin_help - shows the environment where the shell runs
  * @data: struct for the program's data
- *
- * Return: zero if success, or other number if it's declared in the arguments
+ * Return: zero if sucess, or other number if its declared in the arguments
  */
-int my_builtin_help(data_of_program *data)
+int builtin_help(data_of_program *data)
 {
 	int i, length = 0;
-	char *messages[6] = {NULL};
+	char *mensajes[6] = {NULL};
 
-	messages[0] = HELP_MSG;
+	mensajes[0] = HELP_MSG;
 
+	/* validate args */
 	if (data->tokens[1] == NULL)
 	{
-		_print(messages[0] + 6);
+		_print(mensajes[0] + 6);
 		return (1);
 	}
-
 	if (data->tokens[2] != NULL)
 	{
 		errno = E2BIG;
 		perror(data->command_name);
 		return (5);
 	}
-	messages[1] = HELP_EXIT_MSG;
-	messages[2] = HELP_ENV_MSG;
-	messages[3] = HELP_SETENV_MSG;
-	messages[4] = HELP_UNSETENV_MSG;
-	messages[5] = HELP_CD_MSG;
+	mensajes[1] = HELP_EXIT_MSG;
+	mensajes[2] = HELP_ENV_MSG;
+	mensajes[3] = HELP_SETENV_MSG;
+	mensajes[4] = HELP_UNSETENV_MSG;
+	mensajes[5] = HELP_CD_MSG;
 
-	for (i = 0; messages[i]; i++)
+	for (i = 0; mensajes[i]; i++)
 	{
 		length = str_length(data->tokens[1]);
-		if (str_compare(data->tokens[1], messages[i], length))
+		if (str_compare(data->tokens[1], mensajes[i], length))
 		{
-			_print(messages[i] + length + 1);
+			_print(mensajes[i] + length + 1);
 			return (1);
 		}
 	}
-
+	/*if there is no match, print error and return -1 */
 	errno = EINVAL;
 	perror(data->command_name);
 	return (0);
 }
 
 /**
- * my_builtin_alias - add, remove, or show aliases
+ * builtin_alias - add, remove or show aliases
  * @data: struct for the program's data
- *
- * Return: zero if success, or other number if it's declared in the arguments
+ * Return: zero if sucess, or other number if its declared in the arguments
  */
-int my_builtin_alias(data_of_program *data)
+int builtin_alias(data_of_program *data)
 {
 	int i = 0;
 
+	/* if there are no arguments, print all environment */
 	if (data->tokens[1] == NULL)
 		return (print_alias(data, NULL));
 
 	while (data->tokens[++i])
-	{
+	{/* if there are arguments, set or print each env variable*/
 		if (count_characters(data->tokens[i], "="))
 			set_alias(data->tokens[i], data);
 		else

@@ -1,35 +1,42 @@
+#include "shell.h"
 /**
- * custom_strtok - Custom implementation of strtok function
- * @str: The string to be tokenized
- * @delim: The delimiter characters
+ * _strtok - separates strings with delimiters
+ * @line: It´s pointer to array we receive in getline.
+ * @delim: It´s characters we mark off string in parts.
  * Return: A pointer to the created token
- */
-char *custom_strtok(char *str, const char *delim)
+*/
+char *_strtok(char *line, char *delim)
 {
-	static char *saved_str;
-	char *token;
-	int i, j;
+	int j;
+	static char *str;
+	char *copystr;
 
-	if (str != NULL)
-		saved_str = str;
-
-	if (saved_str == NULL || *saved_str == '\0')
-		return (NULL);
-
-	token = saved_str;
-	for (i = 0; saved_str[i] != '\0'; i++)
+	if (line != NULL)
+		str = line;
+	for (; *str != '\0'; str++)
 	{
 		for (j = 0; delim[j] != '\0'; j++)
 		{
-			if (saved_str[i] == delim[j])
+			if (*str == delim[j])
+			break;
+		}
+		if (delim[j] == '\0')
+			break;
+	}
+	copystr = str;
+	if (*copystr == '\0')
+		return (NULL);
+	for (; *str != '\0'; str++)
+	{
+		for (j = 0; delim[j] != '\0'; j++)
+		{
+			if (*str == delim[j])
 			{
-				saved_str[i] = '\0';
-				saved_str = &(saved_str[i + 1]);
-				return (token);
+				*str = '\0';
+				str++;
+				return (copystr);
 			}
 		}
 	}
-
-	saved_str = NULL;
-	return (token);
+	return (copystr);
 }

@@ -1,23 +1,23 @@
+#include "shell.h"
+
 /**
- * custom_print_alias - Add, remove, or show aliases
- * @data: Struct for the program's data
- * @alias_name: Name of the alias to be printed
- *
- * Return: Zero if successful, other number if it's declared in the arguments
+ * print_alias - add, remove or show aliases
+ * @data: struct for the program's data
+ * @alias: name of the alias to be printed
+ * Return: zero if sucess, or other number if its declared in the arguments
  */
-int custom_print_alias(data_of_program *data, char *alias_name)
+int print_alias(data_of_program *data, char *alias)
 {
 	int i, j, alias_length;
 	char buffer[250] = {'\0'};
 
 	if (data->alias_list)
 	{
-		alias_length = custom_str_length(alias_name);
+		alias_length = str_length(alias);
 		for (i = 0; data->alias_list[i]; i++)
 		{
-			if (!alias_name ||
-				(custom_str_compare(data->alias_list[i], alias_name, alias_length) &&
-				 data->alias_list[i][alias_length] == '='))
+			if (!alias || (str_compare(data->alias_list[i], alias, alias_length)
+				&&	data->alias_list[i][alias_length] == '='))
 			{
 				for (j = 0; data->alias_list[i][j]; j++)
 				{
@@ -26,10 +26,10 @@ int custom_print_alias(data_of_program *data, char *alias_name)
 						break;
 				}
 				buffer[j + 1] = '\0';
-				custom_buffer_add(buffer, "'");
-				custom_buffer_add(buffer, data->alias_list[i] + j + 1);
-				custom_buffer_add(buffer, "'\n");
-				_custom_print(buffer);
+				buffer_add(buffer, "'");
+				buffer_add(buffer, data->alias_list[i] + j + 1);
+				buffer_add(buffer, "'\n");
+				_print(buffer);
 			}
 		}
 	}
@@ -38,90 +38,75 @@ int custom_print_alias(data_of_program *data, char *alias_name)
 }
 
 /**
- * custom_get_alias - Get the value of an alias
- * @data: Struct for the program's data
- * @alias_name: Name of the requested alias
- *
- * Return: The value of the alias if found, or NULL if not found
+ * get_alias - add, remove or show aliases
+ * @data: struct for the program's data
+ * @name: name of the requested alias.
+ * Return: zero if sucess, or other number if its declared in the arguments
  */
-char *custom_get_alias(data_of_program *data, char *alias_name)
+char *get_alias(data_of_program *data, char *name)
 {
 	int i, alias_length;
 
-	/* Validate the arguments */
-	if (alias_name == NULL || data->alias_list == NULL)
+	/* validate the arguments */
+	if (name == NULL || data->alias_list == NULL)
 		return (NULL);
 
-	alias_length = custom_str_length(alias_name);
+	alias_length = str_length(name);
 
 	for (i = 0; data->alias_list[i]; i++)
-	{
-		if (custom_str_compare(alias_name, data->alias_list[i], alias_length) &&
+	{/* Iterates through the environ and check for coincidence of the varname */
+		if (str_compare(name, data->alias_list[i], alias_length) &&
 			data->alias_list[i][alias_length] == '=')
-		{
-			/* Return the value of the alias */
+		{/* returns the value of the key NAME=  when find it */
 			return (data->alias_list[i] + alias_length + 1);
 		}
 	}
-
-	/* Return NULL if not found */
+	/* returns NULL if did not find it */
 	return (NULL);
+
 }
 
 /**
- * custom_set_alias - Add or override an alias
- * @alias_string: Alias to be set in the form (name='value')
- * @data: Struct for the program's data
- *
- * Return: Zero if successful, other number if it's declared in the arguments
+ * set_alias - add, or override alias
+ * @alias_string: alias to be seted in the form (name='value')
+ * @data: struct for the program's data
+ * Return: zero if sucess, or other number if its declared in the arguments
  */
-int custom_set_alias(char *alias_string, data_of_program *data)
+int set_alias(char *alias_string, data_of_program *data)
 {
 	int i, j;
 	char buffer[250] = {'0'}, *temp = NULL;
 
-	/* Validate the arguments */
-	if (alias_string == NULL || data->alias_list == NULL)
+	/* validate the arguments */
+	if (alias_string == NULL ||  data->alias_list == NULL)
 		return (1);
-
-	/* Iterate through the alias string to find the = character */
+	/* Iterates alias to find = char */
 	for (i = 0; alias_string[i]; i++)
-	{
 		if (alias_string[i] != '=')
 			buffer[i] = alias_string[i];
 		else
-		{
-			/* Search if the value of the alias is another alias */
-			temp = custom_get_alias(data, alias_string + i + 1);
+		{/* search if the value of the alias is another alias */
+			temp = get_alias(data, alias_string + i + 1);
 			break;
 		}
-	}
 
-	/* Iterate through the alias list and check for coincidence of the varname */
+	/* Iterates through the alias list and check for coincidence of the varname */
 	for (j = 0; data->alias_list[j]; j++)
-	{
-		if (custom_str_compare(buffer, data->alias_list[j], i) &&
+		if (str_compare(buffer, data->alias_list[j], i) &&
 			data->alias_list[j][i] == '=')
-		{
-			/* If the alias already exists, free the previous value */
+		{/* if the alias alredy exist */
 			free(data->alias_list[j]);
 			break;
 		}
-	}
 
-	/* Add or override the alias */
+	/* add the alias */
 	if (temp)
-	{
-		/* If the alias already exists, update its value */
-		custom_buffer_add(buffer, "=");
-		custom_buffer_add(buffer, temp);
-		data->alias_list[j] = custom_str_duplicate(buffer);
+	{/* if the alias already exist */
+		buffer_add(buffer, "=");
+		buffer_add(buffer, temp);
+		data->alias_list[j] = str_duplicate(buffer);
 	}
-	else
-	{
-		/* If the alias does not exist, add it to the list */
-		data->alias_list[j] = custom_str_duplicate(alias_string);
-	}
-
+	else /* if the alias does not exist */
+		data->alias_list[j] = str_duplicate(alias_string);
 	return (0);
 }

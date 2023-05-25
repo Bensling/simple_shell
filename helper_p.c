@@ -1,21 +1,20 @@
 #include "shell.h"
 
 /**
- * _print - Writes an array of characters to standard output.
- * @string: Pointer to the array of characters.
- * Return: The number of bytes written.
- *         On error, -1 is returned, and errno is set appropriately.
+ * _print - writes a array of chars in the standar output
+ * @string: pointer to the array of chars
+ * Return: the number of bytes writed or .
+ * On error, -1 is returned, and errno is set appropriately.
  */
 int _print(char *string)
 {
 	return (write(STDOUT_FILENO, string, str_length(string)));
 }
-
 /**
- * _printe - Writes an array of characters to standard error.
- * @string: Pointer to the array of characters.
- * Return: The number of bytes written.
- *         On error, -1 is returned, and errno is set appropriately.
+ * _printe - writes a array of chars in the standar error
+ * @string: pointer to the array of chars
+ * Return: the number of bytes writed or .
+ * On error, -1 is returned, and errno is set appropriately.
  */
 int _printe(char *string)
 {
@@ -23,17 +22,17 @@ int _printe(char *string)
 }
 
 /**
- * _print_error - Writes an error message to standard error.
- * @errorcode: The error code to print.
- * @data: A pointer to the program's data.
- * Return: The number of bytes written.
- *         On error, -1 is returned, and errno is set appropriately.
+ * _print_error - writes a array of chars in the standart error
+ * @data: a pointer to the program's data'
+ * @errorcode: error code to print
+ * Return: the number of bytes writed or .
+ * On error, -1 is returned, and errno is set appropriately.
  */
 int _print_error(int errorcode, data_of_program *data)
 {
 	char n_as_string[10] = {'\0'};
 
-	long_to_string((long)data->exec_counter, n_as_string, 10);
+	long_to_string((long) data->exec_counter, n_as_string, 10);
 
 	if (errorcode == 2 || errorcode == 3)
 	{
@@ -47,7 +46,7 @@ int _print_error(int errorcode, data_of_program *data)
 		else
 			_printe(": can't cd to ");
 		_printe(data->tokens[1]);
-		 _printe("\n");
+		_printe("\n");
 	}
 	else if (errorcode == 127)
 	{
@@ -67,6 +66,5 @@ int _print_error(int errorcode, data_of_program *data)
 		_printe(data->command_name);
 		_printe(": Permission denied\n");
 	}
-
 	return (0);
 }

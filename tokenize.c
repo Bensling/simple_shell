@@ -1,11 +1,12 @@
+#include "shell.h"
 /**
- * custom_tokenizer - Custom implementation of string tokenizer
- * @data: Pointer to the program's data
- * Return: An array of the different parts of the string
+ * tokenize - this function separate the string using a designed delimiter
+ * @data: a pointer to the program's data
+ * Return: an array of the different parts of the string
  */
-void custom_tokenizer(data_of_program *data)
+void tokenize(data_of_program *data)
 {
-	char *delimiters = " \t";
+	char *delimiter = " \t";
 	int i, j, counter = 2, length;
 
 	length = str_length(data->input_line);
@@ -17,9 +18,9 @@ void custom_tokenizer(data_of_program *data)
 
 	for (i = 0; data->input_line[i]; i++)
 	{
-		for (j = 0; delimiters[j]; j++)
+		for (j = 0; delimiter[j]; j++)
 		{
-			if (data->input_line[i] == delimiters[j])
+			if (data->input_line[i] == delimiter[j])
 				counter++;
 		}
 	}
@@ -31,10 +32,10 @@ void custom_tokenizer(data_of_program *data)
 		exit(errno);
 	}
 	i = 0;
-	data->tokens[i] = str_duplicate(custom_strtok(data->input_line, delimiters));
+	data->tokens[i] = str_duplicate(_strtok(data->input_line, delimiter));
 	data->command_name = str_duplicate(data->tokens[0]);
 	while (data->tokens[i++])
 	{
-		data->tokens[i] = str_duplicate(custom_strtok(NULL, delimiters));
+		data->tokens[i] = str_duplicate(_strtok(NULL, delimiter));
 	}
 }
