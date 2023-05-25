@@ -5,6 +5,7 @@
  * @data: struct for the program's data
  * @alias: name of the alias to be printed
  * Return: zero if sucess, or other number if its declared in the arguments
+ *
  */
 int print_alias(data_of_program *data, char *alias)
 {
