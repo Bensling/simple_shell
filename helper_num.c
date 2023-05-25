@@ -7,6 +7,7 @@
  * @base: base to convert number
  *
  * Return: Nothing.
+ *
  */
 void long_to_string(long number, char *string, int base)
 {
